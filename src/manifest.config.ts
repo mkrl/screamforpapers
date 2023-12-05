@@ -22,12 +22,6 @@ export default defineManifest(async (env) => ({
         "48": "src/assets/icons/icon-48.png",
         "128": "src/assets/icons/icon-128.png",
     },
-    content_scripts: [
-        {
-            matches: ["https://*/*"],
-            js: ["src/content/index.ts"],
-        },
-    ],
     background: {
         service_worker: "src/background/index.ts",
     },
@@ -39,7 +33,6 @@ export default defineManifest(async (env) => ({
         default_path: "src/sidepanel/sidepanel.html",
     },
     action: {
-        default_popup: "src/popup/popup.html",
         default_icon: {
             "16": "src/assets/icons/icon-16.png",
             "32": "src/assets/icons/icon-32.png",
@@ -47,5 +40,6 @@ export default defineManifest(async (env) => ({
             "128": "src/assets/icons/icon-128.png",
         },
     },
-    permissions: ["storage", "sidePanel"] as chrome.runtime.ManifestPermissions[],
+    host_permissions: ["<all_urls>"],
+    permissions: ["storage", "sidePanel", "activeTab","scripting"] as chrome.runtime.ManifestPermissions[],
 }));

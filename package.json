@@ -1,6 +1,6 @@
 {
-    "name": "chrome-extension-svelte-typescript-boilerplate",
-    "description": "Boilerplate for Chrome Extension Svelte Typescript project",
+    "name": "Scream For Papers",
+    "description": "Submit all the CFPs!",
     "version": "1.0.0",
     "type": "module",
     "repository": {
@@ -23,5 +23,8 @@
         "tslib": "2.6.2",
         "typescript": "5.2.2",
         "vite": "4.2.3"
+    },
+    "dependencies": {
+        "@popperjs/core": "^2.11.8"
     }
 }

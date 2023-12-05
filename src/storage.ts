@@ -1,13 +1,58 @@
-type IStorage = {
-    count: number;
+type TalkMeta = {
+    id: string;
+    title?: string;
+    Title?: string;
+    __revision: {
+        link: string;
+        sha: string;
+    };
+}
+
+export type Talk = {
+    [key: string]: string;
+} & TalkMeta
+
+type PersonalInfoMeta = {
+    name?: string;
+    email?: string;
+}
+
+export type PersonalInfo = {
+    [key: string]: string;
+} & PersonalInfoMeta
+
+type SyncExtensionStorage = {
+    token: string | null;
+    repo: string | null;
 };
 
-const defaultStorage: IStorage = {
-    count: 0,
+type LocalExtensionStorage = {
+    lastSyncedAt?: string;
+    personalInfo?: PersonalInfo;
+    talkList?: Talk[];
+    selectedTalk?: string;
 };
 
-export const storage = {
-    get: (): Promise<IStorage> =>
-        chrome.storage.sync.get(defaultStorage) as Promise<IStorage>,
-    set: (value: IStorage): Promise<void> => chrome.storage.sync.set(value),
+const defaultSyncStorage: SyncExtensionStorage = {
+    token: null,
+    repo: null,
+};
+
+const defaultLocalStorage: LocalExtensionStorage = {
+    lastSyncedAt: 'never',
+    personalInfo: {},
+    talkList: [],
+    selectedTalk: ''
+};
+
+export const storageSync = {
+    get: (): Promise<SyncExtensionStorage> =>
+        chrome.storage.sync.get(defaultSyncStorage) as Promise<SyncExtensionStorage>,
+    set: (value: SyncExtensionStorage): Promise<void> => chrome.storage.sync.set(value),
+};
+
+export const storageLocal = {
+    get: (): Promise<LocalExtensionStorage> =>
+        chrome.storage.local.get(defaultLocalStorage) as Promise<LocalExtensionStorage>,
+    set: (value: LocalExtensionStorage): Promise<void> => chrome.storage.local.set(value),
 };

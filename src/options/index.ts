@@ -1,18 +1,15 @@
 import Options from "../components/Options.svelte";
-import { storage } from "../storage";
+import {storageLocal, storageSync} from "../storage";
 
-// Options
-// https://developer.chrome.com/docs/extensions/mv3/options/
-
-function render() {
+async function render() {
     const target = document.getElementById("app");
 
     if (target) {
-        storage.get().then(({ count }) => {
-            new Options({
-                target,
-                props: { count },
-            });
+        const { token, repo } = await storageSync.get()
+        const { lastSyncedAt, talkList } = await storageLocal.get()
+        new Options({
+            target,
+            props: { token, repo, lastSyncedAt, talks: talkList },
         });
     }
 }

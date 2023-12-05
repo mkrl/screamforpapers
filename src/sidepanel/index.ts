@@ -1,20 +1,22 @@
-import Options from "../components/Options.svelte";
-import { storage } from "../storage";
+import SidePanel from "../components/SidePanel.svelte";
 
-// Side panel
-// https://developer.chrome.com/docs/extensions/reference/sidePanel/
-
-function render() {
+async function render() {
     const target = document.getElementById("app");
 
     if (target) {
-        storage.get().then(({ count }) => {
-            new Options({
-                target,
-                props: { count },
-            });
+        new SidePanel({
+            target,
         });
     }
 }
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+        console.log(
+            `Storage key "${key}" in namespace "${namespace}" changed.`,
+            `Old value was "${oldValue}", new value is "${newValue}".`
+        );
+    }
+});
 
 document.addEventListener("DOMContentLoaded", render);

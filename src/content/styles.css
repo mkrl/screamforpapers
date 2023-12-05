@@ -1,3 +1,42 @@
-body {
-    background: rgba(232, 240, 254, 0.4) !important;
+#sfp-tooltip {
+    background: #333;
+    color: white;
+    font-weight: bold;
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 4px;
+}
+
+.sfp-tooltip-arrow,
+.sfp-tooltip-arrow::before {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: inherit;
+}
+
+.sfp-tooltip-arrow{
+    visibility: hidden;
+}
+
+.sfp-tooltip-arrow::before {
+    visibility: visible;
+    content: '';
+    transform: rotate(45deg);
+}
+
+#sfp-tooltip[data-popper-placement^='top'] > .sfp-tooltip-arrow {
+    bottom: -4px;
+}
+
+#sfp-tooltip[data-popper-placement^='bottom'] > .sfp-tooltip-arrow {
+    top: -4px;
+}
+
+#sfp-tooltip[data-popper-placement^='left'] > .sfp-tooltip-arrow {
+    right: -4px;
+}
+
+#sfp-tooltip[data-popper-placement^='right'] > .sfp-tooltip-arrow {
+    left: -4px;
 }
