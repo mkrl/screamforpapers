@@ -1,11 +1,17 @@
 <script lang="ts">
     import type {PersonalInfo, Talk} from "../storage";
-    import {getTalkName, publicKeysOnly} from '../tools/helpers.js'
+    import {getTalkName, publicKeysOnly, simulateInput} from '../tools/helpers'
+    import type {FocusableTarget} from '../tools/helpers'
     import Button from "./ui/Button.svelte";
     import Accordion from "./ui/Accordion.svelte";
+    import type {Writable} from "svelte/store";
 
     export let activeTalk: Talk;
     export let personalInfo: PersonalInfo;
+
+    export let activeInput: Writable<FocusableTarget>
+
+    let inputRef: FocusableTarget
 
     let unusedTalkFields: string[] = Object.keys(activeTalk).filter(publicKeysOnly)
     let usedTalkFields: string[] = []
@@ -13,9 +19,14 @@
     let unusedPersonalFields: string[] = Object.keys(personalInfo)
     let usedPersonalFields: string[] = []
 
+    activeInput.subscribe((value) => {
+        inputRef = value
+    });
 
 
     const onClick = (key: string, personal = false) => {
+        const dataSource = personal ? personalInfo : activeTalk
+        simulateInput(inputRef, dataSource[key])
         if (!personal) {
             unusedTalkFields = [...unusedTalkFields.filter((field) => field !== key)]
             usedTalkFields = [...usedTalkFields, key]
@@ -23,6 +34,11 @@
             unusedPersonalFields = [...unusedPersonalFields.filter((field) => field !== key)]
             usedPersonalFields = [...usedPersonalFields, key]
         }
+    }
+
+    const onClickUsed = (key: string, personal = false) => {
+        const dataSource = personal ? personalInfo : activeTalk
+        simulateInput(inputRef, dataSource[key])
     }
 
 </script>
@@ -38,15 +54,17 @@
         <Button label={unusedField} on:click={() => onClick(unusedField)} />
     {/each}
     <hr/>
-    <Accordion label="Show used">
-        {#each usedPersonalFields as usedField}
-            <Button label={usedField} />
-        {/each}
-        <hr/>
-        {#each usedTalkFields as usedField}
-            <Button label={usedField} />
-        {/each}
-    </Accordion>
+    {#if usedPersonalFields.length > 0 || usedTalkFields.length > 0}
+        <Accordion label="Show used">
+            {#each usedPersonalFields as usedField}
+                <Button label={usedField} on:click={() => onClickUsed(usedField, true)} />
+            {/each}
+            <hr/>
+            {#each usedTalkFields as usedField}
+                <Button label={usedField} on:click={() => onClickUsed(usedField)} />
+            {/each}
+        </Accordion>
+    {/if}
 
 </section>
 

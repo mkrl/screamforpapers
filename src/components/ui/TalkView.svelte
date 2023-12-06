@@ -20,6 +20,9 @@
     .talk {
         display: flex;
         flex-direction: column;
+        box-shadow: 0px 3px 17px 0px #0000002b;
+        padding: 0.3rem;
+        border-radius: 3px;
     }
     .talk p {
         white-space: pre-line;
