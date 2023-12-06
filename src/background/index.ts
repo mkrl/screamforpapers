@@ -1,6 +1,7 @@
 import {storageLocal, storageSync} from "../storage";
 // @ts-ignore
 import contentScript from '../content?script'
+// import panel from '../sidepanel/sidepanel.html?url'
 
 // Background service workers
 // https://developer.chrome.com/docs/extensions/mv3/service_workers/
@@ -12,6 +13,23 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
    .catch((error) => console.error(error));
+
+// Completely stupid hack, openPanelOnActionClick: true is only able to open a panel that persists through all the tabs
+// the only way to avoid this is to remove side_panel.default_path from manifest, set openPanelOnActionClick to true and then
+// for every tab you navigate to you would set tabId for the side panel in the listener
+//
+// It is also not possible to use chrome.sidePanel.open with the needed tab.id because it demands user interaction first.
+// Clicking on the action (chrome.action.onClicked) is not considered a user interaction... however it works on the second attempt
+chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
+    if (!tab.url) return;
+    const url = new URL(tab.url);
+    await chrome.sidePanel.setOptions({
+        tabId: tab.id,
+        path: 'src/sidepanel/sidepanel.html',
+        enabled: true
+    });
+});
+
 chrome.runtime.onMessage.addListener(
     async function(request, sender, sendResponse) {
         const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
