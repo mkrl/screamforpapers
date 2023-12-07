@@ -29,10 +29,6 @@ export default defineManifest(async (env) => ({
         page: "src/options/options.html",
         open_in_tab: false,
     },
-    // This needs to be built and bundled, then later removed from the manifest in production build
-    side_panel: {
-        default_path: "src/sidepanel/sidepanel.html",
-    },
     action: {
         default_icon: {
             "16": "src/assets/icons/icon-16.png",
