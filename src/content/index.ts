@@ -3,11 +3,6 @@ import type {PersonalInfo, Talk} from "../storage";
 import { createPopper } from '@popperjs/core';
 import { writable } from 'svelte/store';
 
-// Content scripts
-// https://developer.chrome.com/docs/extensions/mv3/content_scripts/
-
-// Some global styles on the page
-import "./styles.css";
 import {isElementVisible} from "../tools/helpers";
 
 const createTooltip = () => {

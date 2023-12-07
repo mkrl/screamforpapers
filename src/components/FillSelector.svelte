@@ -73,4 +73,49 @@
         display: flex;
         flex-direction: column;
     }
+
+    /* Global selectors for tooltip styling, handled by Svelte due to bundling shenanigans */
+
+    :global(#sfp-tooltip) {
+        background: #333;
+        color: white;
+        font-weight: bold;
+        padding: 4px 8px;
+        font-size: 13px;
+        border-radius: 4px;
+    }
+
+    :global(.sfp-tooltip-arrow),
+    :global(.sfp-tooltip-arrow::before) {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: inherit;
+    }
+
+    :global(.sfp-tooltip-arrow){
+        visibility: hidden;
+    }
+
+    :global(.sfp-tooltip-arrow::before) {
+        visibility: visible;
+        content: '';
+        transform: rotate(45deg);
+    }
+
+    :global(#sfp-tooltip[data-popper-placement^='top']) > :global(.sfp-tooltip-arrow) {
+        bottom: -4px;
+    }
+
+    :global(#sfp-tooltip[data-popper-placement^='bottom']) > :global(.sfp-tooltip-arrow) {
+        top: -4px;
+    }
+
+    :global(#sfp-tooltip[data-popper-placement^='left']) > :global(.sfp-tooltip-arrow) {
+        right: -4px;
+    }
+
+    :global(#sfp-tooltip[data-popper-placement^='right']) > :global(.sfp-tooltip-arrow) {
+        left: -4px;
+    }
 </style>
