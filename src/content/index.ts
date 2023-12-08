@@ -2,6 +2,7 @@ import FillSelector from "../components/FillSelector.svelte";
 import type {PersonalInfo, Talk} from "../storage";
 import { createPopper } from '@popperjs/core';
 import { writable } from 'svelte/store';
+import '../app.pcss'
 
 import {isElementVisible} from "../tools/helpers";
 

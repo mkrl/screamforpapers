@@ -4,6 +4,7 @@
     import {syncWithGithub} from "../tools/github";
     import {getTalkName} from '../tools/helpers.js'
     import Button from './ui/Button.svelte'
+    import Card from 'flowbite-svelte/Card.svelte';
 
     export let token: string;
     export let repo: string;
@@ -38,30 +39,32 @@
     }
 </script>
 
-<section class="container">
-    <label for="token">
-        Github Token:
-    </label>
-    <input bind:value={token} type="password" id="token" placeholder="Fine-grained read-only token is encouraged" />
-    <label for="repo">
-        Repo URL:
-    </label>
-    <input bind:value={repo} type="text" id="repo" placeholder="Can be private, be sure the token has read access to it!" />
-    <Button on:click={save} label="Save GitHub settings" />
-    {#if successMessage}<span class="success">{successMessage}</span>{/if}
-</section>
-<br/>
-<hr/>
-<section class="container">
-    <h1>Topic List:</h1>
-    <i>Last synced at: {lastSyncedAt}</i>
-    <ul>
-        {#each talks as talk}
-            <li>{getTalkName(talk)} @ <code><a href="{talk.__revision.link}" target="_blank">{talk.__revision.sha.slice(0,7)}</a></code></li>
-        {/each}
-    </ul>
-    <Button label={loading ? "Syncing..." : "Sync now!"} on:click={sync} loading={loading} />
-</section>
+<Card>
+    <section class="container">
+        <label for="token">
+            Github Token:
+        </label>
+        <input bind:value={token} type="password" id="token" placeholder="Fine-grained read-only token is encouraged" />
+        <label for="repo">
+            Repo URL:
+        </label>
+        <input bind:value={repo} type="text" id="repo" placeholder="Can be private, be sure the token has read access to it!" />
+        <Button on:click={save} label="Save GitHub settings" />
+        {#if successMessage}<span class="success">{successMessage}</span>{/if}
+    </section>
+    <br/>
+    <hr/>
+    <section class="container">
+        <h1>Topic List:</h1>
+        <i>Last synced at: {lastSyncedAt}</i>
+        <ul>
+            {#each talks as talk}
+                <li>{getTalkName(talk)} @ <code><a href="{talk.__revision.link}" target="_blank">{talk.__revision.sha.slice(0,7)}</a></code></li>
+            {/each}
+        </ul>
+        <Button label={loading ? "Syncing..." : "Sync now!"} on:click={sync} loading={loading} />
+    </section>
+</Card>
 
 <style>
     .container {

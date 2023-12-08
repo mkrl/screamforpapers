@@ -2,29 +2,25 @@
     import type {Talk} from "../../storage";
     import {getTalkName, publicKeysOnly} from '../../tools/helpers.js'
 
+    import Card from 'flowbite-svelte/Card.svelte'
+    import P from "flowbite-svelte/P.svelte";
+
+
     export let talk: Talk
 
 </script>
 
 {#if talk}
-    <section class="talk">
-        <h1>{getTalkName(talk)} @ <code><a href="{talk.__revision.link}" target="_blank">{talk.__revision.sha.slice(0,7)}</a></code></h1>
+    <Card class="flex flex-col p-1 w-full max-w-none h-full overflow-y-auto">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{getTalkName(talk)} @
+            <code class="bg-gray-200 p-1 rounded-md">
+                <a href="{talk.__revision.link}" target="_blank">{talk.__revision.sha.slice(0,7)}</a>
+            </code>
+        </h5>
         {#each Object.keys(talk).filter(publicKeysOnly) as key}
-            <h3>{key}</h3>
-            <p>{talk[key]}</p>
+            <h3 class="mb-1 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{key}</h3>
+            <P class="mb-2">{talk[key]}</P>
         {/each}
-    </section>
+    </Card>
 {/if}
 
-<style>
-    .talk {
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0px 3px 17px 0px #0000002b;
-        padding: 0.3rem;
-        border-radius: 3px;
-    }
-    .talk p {
-        white-space: pre-line;
-    }
-</style>

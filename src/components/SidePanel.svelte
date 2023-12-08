@@ -3,9 +3,11 @@
     import {storageLocal} from "../storage";
     import type {Talk} from "../storage";
     import {getTalkName} from '../tools/helpers.js'
-    import Select from './ui/Select.svelte'
+    import TalkSelect from './ui/TalkSelect.svelte'
+    import Heading from 'flowbite-svelte/Heading.svelte'
     import TalkView from "./ui/TalkView.svelte";
-    import Button from "./ui/Button.svelte";
+    import Button from "flowbite-svelte/Button.svelte";
+    import P from "flowbite-svelte/P.svelte";
 
     let talks: Talk[] = [];
     let lastSyncTime: string = "never";
@@ -35,39 +37,25 @@
     }
 </script>
 
-<section class="container section">
-    <div class="container">
+<section class="flex justify-between flex-col h-screen p-6">
+    <div class="flex flex-col flex-grow">
         {#if !submitInitialized}
-            <h1>What are we submitting today?</h1>
-            {#if lastSyncTime === "never"}<i>Looks like you have not yet set up Github sync or have never synced. You can do that in extension options.</i>{/if}
-            {#if talks.length === 0 && lastSyncTime !== "never"}<i>Looks like you have not added any talks. You can do that by pushing any suitable markdown files to your repo.</i>{/if}
+            <Heading class="mb-6 mt-3">What are we submitting today?</Heading>
+            {#if lastSyncTime === "never"}<P class="text-gray-500 dark:text-gray-400">Looks like you have not yet set up Github sync or have never synced. You can do that in extension options.</P>{/if}
+            {#if talks.length === 0 && lastSyncTime !== "never"}<P class="text-gray-500 dark:text-gray-400">Looks like you have not added any talks yet. You can do that by pushing any suitable markdown files to your repo.</P>{/if}
             {#if talks.length > 0}
-                <Select options={talks} bind:value={selectedTalk} displayFn={getTalkName} />
+                <TalkSelect options={talks} bind:value={selectedTalk} displayFn={getTalkName} />
             {/if}
         {:else}
-            <h1>You're on your way to submit your next CFP, way to go!</h1>
+            <Heading class="mb-6 mt-3">You're on your way to submit your next CFP, way to go!</Heading>
         {/if}
 
         {#if selectedTalk}
-            <hr/>
             {#if !submitInitialized}
-                <Button on:click={onRoll} label="Let's roll"/>
+                <Button class="mb-4" on:click={onRoll}>Let's roll</Button>
             {/if}
-            <br/>
-            <hr/>
             <TalkView talk={selectedTalk} />
         {/if}
     </div>
-    <Button on:click={onClickDashboard} label="Dashboard"/>
+    <Button class="mt-6" on:click={onClickDashboard}>Dashboard</Button>
 </section>
-
-<style>
-    .container {
-        display: flex;
-        flex-direction: column;
-    }
-    .section {
-        height: calc(100vh - 16px);
-        justify-content: space-between;
-    }
-</style>

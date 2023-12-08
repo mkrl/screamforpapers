@@ -1,5 +1,6 @@
 import Options from "../components/Options.svelte";
 import {storageLocal, storageSync} from "../storage";
+import '../app.pcss'
 
 async function render() {
     const target = document.getElementById("app");

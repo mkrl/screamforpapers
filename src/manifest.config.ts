@@ -27,7 +27,9 @@ export default defineManifest(async (env) => ({
     },
     options_ui: {
         page: "src/options/options.html",
-        open_in_tab: false,
+        // Include a flag to open options right away from dashboard, probably will have to modify manifest
+        // page: "src/dashboard/dashboard.html",
+        open_in_tab: true,
     },
     action: {
         default_icon: {
