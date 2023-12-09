@@ -2,7 +2,7 @@ import FillSelector from "../components/FillSelector.svelte";
 import type {PersonalInfo, Talk} from "../storage";
 import { createPopper } from '@popperjs/core';
 import { writable } from 'svelte/store';
-import '../app.pcss'
+import css from '../content-styles.pcss?inline'
 
 import {type FocusableTarget, isElementVisible} from "../tools/helpers";
 
@@ -37,10 +37,17 @@ const drawTooltip = (target: Element, content: HTMLElement) => {
     });
 }
 
+// @TODO this generates MASSIVE bundle (170kb+) for content script since it's not possible to only detect used styles while inlining, but it prevents style leaks
+const injectCss = () => {
+    let style = document.createElement('style');
+    style.textContent = css;
+    document.head.append(style);
+}
+
 const onStart = async (request: { targetTalk: Talk, personalInfo: PersonalInfo }) => {
     const { targetTalk, personalInfo } = request
     console.log('Initiating submission process with the following data: ', { targetTalk, personalInfo })
-
+    injectCss()
     // @TODO: apply more sophisticated form detection method
     const formInputs = document.querySelectorAll<FocusableTarget>('input, textarea, [contenteditable]')
     const visibleInputs = Array.from(formInputs).filter(isElementVisible)

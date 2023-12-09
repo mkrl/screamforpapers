@@ -47,7 +47,7 @@
 
 </script>
 
-<section class="flex flex-col max-w-xs gap-2 sfp-tooltip-content">
+<section class="flex flex-col max-w-xs gap-2 sfp-tooltip-content rounded-lg shadow-md py-2 px-3 text-sm bg-gray-700 font-medium">
     <h5 class="text-lg font-bold tracking-tight text-white w-full">About me</h5>
     {#each unusedPersonalFields as unusedField}
         <Button pill on:click={() => onClick(unusedField, true)}>{unusedField}</Button>
@@ -82,53 +82,3 @@
 
 </section>
 
-<style>
-    /* Global selectors for tooltip styling, handled by Svelte due to bundling shenanigans */
-
-    :global(#sfp-tooltip) {
-        z-index: 99999;
-    }
-
-    :global(.sfp-tooltip-arrow),
-    :global(.sfp-tooltip-arrow::before) {
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        background: inherit;
-    }
-
-    :global(.sfp-tooltip-arrow){
-        visibility: hidden;
-    }
-
-    :global(.sfp-tooltip-arrow::before) {
-        visibility: visible;
-        content: '';
-        transform: rotate(45deg);
-    }
-
-    :global(#sfp-tooltip[data-popper-placement^='top']) > :global(.sfp-tooltip-arrow) {
-        bottom: -4px;
-    }
-
-    :global(#sfp-tooltip[data-popper-placement^='bottom']) > :global(.sfp-tooltip-arrow) {
-        top: -4px;
-    }
-
-    :global(#sfp-tooltip[data-popper-placement^='left']) > :global(.sfp-tooltip-arrow) {
-        right: -4px;
-    }
-
-    :global(#sfp-tooltip[data-popper-placement^='right']) > :global(.sfp-tooltip-arrow) {
-        left: -4px;
-    }
-
-
-    :global(#sfp-tooltip[data-popper-placement^='left']) .sfp-tooltip-content {
-        align-items: end;
-    }
-    :global(#sfp-tooltip[data-popper-placement^='right']) .sfp-tooltip-content {
-        align-items: start;
-    }
-
-</style>

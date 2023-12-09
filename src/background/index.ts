@@ -1,6 +1,6 @@
 import {storageLocal, storageSync} from "../storage";
 // @ts-ignore
-import contentScript from '../content?script'
+import contentScript from '../content/content-script.ts?script'
 
 // Background service workers
 // https://developer.chrome.com/docs/extensions/mv3/service_workers/

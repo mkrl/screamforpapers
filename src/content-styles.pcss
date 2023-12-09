@@ -1,0 +1,54 @@
+/* Write your global styles here, in PostCSS syntax */
+
+#sfp-tooltip {
+    z-index: 99999;
+}
+
+.sfp-tooltip-arrow {
+    visibility: hidden;
+}
+
+.sfp-tooltip-arrow::before {
+    visibility: visible;
+    content: '';
+    transform: rotate(45deg);
+}
+
+#sfp-tooltip[data-popper-placement^='top'] > .sfp-tooltip-arrow {
+    bottom: -4px;
+}
+
+#sfp-tooltip[data-popper-placement^='bottom'] > .sfp-tooltip-arrow {
+    top: -4px;
+}
+
+#sfp-tooltip[data-popper-placement^='left'] > .sfp-tooltip-arrow {
+    right: -4px;
+}
+
+#sfp-tooltip[data-popper-placement^='right'] > .sfp-tooltip-arrow {
+    left: -4px;
+}
+
+
+#sfp-tooltip[data-popper-placement^='left'] .sfp-tooltip-content {
+    align-items: end;
+}
+
+#sfp-tooltip[data-popper-placement^='right'] .sfp-tooltip-content {
+    align-items: start;
+}
+
+#sfp-tooltip {
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    .sfp-tooltip-arrow,
+    .sfp-tooltip-arrow::before {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background-color: #394150;
+    }
+}
