@@ -56,7 +56,9 @@
         </Tabs>
     </aside>
 
-    <main class="col-span-8 border-2 border-dashed rounded-xl p-6 overflow-y-scroll">
-        <Onboarding step={activeTab['Options'] ? 0 : 1} />
+    <main class="col-span-8 border-2 border-dashed rounded-xl p-6 overflow-y-auto">
+        {#if forcedState === "welcome"}
+            <Onboarding step={activeTab['Options'] ? 0 : 1} />
+        {/if}
     </main>
 </div>

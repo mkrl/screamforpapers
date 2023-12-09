@@ -1,15 +1,20 @@
 import {storageLocal, storageSync} from "../storage";
 // @ts-ignore
 import contentScript from '../content?script'
-// import panel from '../sidepanel/sidepanel.html?url'
 
 // Background service workers
 // https://developer.chrome.com/docs/extensions/mv3/service_workers/
 
-chrome.runtime.onInstalled.addListener(() => {
-    storageSync.get().then(console.log);
-    storageLocal.get().then(console.log);
-});
+chrome.runtime.onInstalled.addListener(async (details) => {
+    if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+        const { token, repo } = await storageSync.get()
+        if (!token || !repo) {
+            await chrome.tabs.create({
+                url: "src/dashboard/dashboard.html?welcome"
+            });
+        }
+    }
+})
 
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
    .catch((error) => console.error(error));
@@ -22,7 +27,6 @@ chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
 // Clicking on the action (chrome.action.onClicked) is not considered a user interaction... however it works on the second attempt
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
     if (!tab.url) return;
-    const url = new URL(tab.url);
     await chrome.sidePanel.setOptions({
         tabId: tab.id,
         path: 'src/sidepanel/sidepanel.html',

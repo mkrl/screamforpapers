@@ -26,9 +26,9 @@ export default defineManifest(async (env) => ({
         service_worker: "src/background/index.ts",
     },
     options_ui: {
-        page: "src/options/options.html",
-        // Include a flag to open options right away from dashboard, probably will have to modify manifest
-        // page: "src/dashboard/dashboard.html",
+        page: "src/dashboard/dashboard.html",
+        // Include a flag to open options right away from dashboard, at production build is replaced to:
+        // page: "src/dashboard/dashboard.html?options",
         open_in_tab: true,
     },
     action: {
