@@ -4,11 +4,12 @@ import { createPopper } from '@popperjs/core';
 import { writable } from 'svelte/store';
 import '../app.pcss'
 
-import {isElementVisible} from "../tools/helpers";
+import {type FocusableTarget, isElementVisible} from "../tools/helpers";
 
 const createTooltip = () => {
     const tooltip = document.createElement('div')
     const target = document.createElement('div')
+    tooltip.className = 'rounded-lg shadow-md py-2 px-3 text-sm bg-gray-700 font-medium'
     tooltip.id = 'sfp-tooltip'
     tooltip.innerHTML = `<div class="sfp-tooltip-arrow" data-popper-arrow></div>`
     tooltip.append(target)
@@ -26,6 +27,12 @@ const drawTooltip = (target: Element, content: HTMLElement) => {
                     offset: [0, 10],
                 },
             },
+            {
+                name: 'flip',
+                options: {
+                    fallbackPlacements: ['right'],
+                },
+            },
         ],
     });
 }
@@ -35,7 +42,7 @@ const onStart = async (request: { targetTalk: Talk, personalInfo: PersonalInfo }
     console.log('Initiating submission process with the following data: ', { targetTalk, personalInfo })
 
     // @TODO: apply more sophisticated form detection method
-    const formInputs = document.querySelectorAll('input, textarea')
+    const formInputs = document.querySelectorAll<FocusableTarget>('input, textarea, [contenteditable]')
     const visibleInputs = Array.from(formInputs).filter(isElementVisible)
 
     const activeInput = writable(visibleInputs[0])
@@ -45,6 +52,17 @@ const onStart = async (request: { targetTalk: Talk, personalInfo: PersonalInfo }
 
 
     drawTooltip(visibleInputs[0], tooltip)
+
+    // Manual tooltip trigger
+    // document.addEventListener('keydown', function(event) {
+    //     if (event.altKey && event.key === 'q') {
+    //         const activeElement = document.activeElement
+    //         if (activeElement && activeElement.focus()) {
+    //             activeInput.set(activeElement as FocusableTarget)
+    //             drawTooltip(activeElement, tooltip)
+    //         }
+    //     }
+    // });
 
     visibleInputs.forEach(input => {
         input.addEventListener('focus', () => {

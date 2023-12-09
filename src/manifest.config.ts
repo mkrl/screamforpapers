@@ -40,5 +40,5 @@ export default defineManifest(async (env) => ({
         },
     },
     host_permissions: ["<all_urls>"],
-    permissions: ["storage", "sidePanel", "activeTab","scripting"] as chrome.runtime.ManifestPermissions[],
+    permissions: ["storage", "sidePanel", "activeTab","scripting","downloads"] as chrome.runtime.ManifestPermissions[],
 }));
