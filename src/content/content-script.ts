@@ -6,6 +6,14 @@ import css from '../content-styles.pcss?inline'
 
 import {type FocusableTarget, isElementVisible} from "../tools/helpers";
 
+type WorkerMessage = {
+    targetTalk: Talk,
+    personalInfo: PersonalInfo
+}
+type SidebarMessage = {
+    status: string
+}
+
 const createTooltip = () => {
     const tooltip = document.createElement('div')
     const target = document.createElement('div')
@@ -44,39 +52,47 @@ const injectCss = () => {
     document.head.append(style);
 }
 
-const onStart = async (request: { targetTalk: Talk, personalInfo: PersonalInfo }) => {
-    const { targetTalk, personalInfo } = request
-    console.log('Initiating submission process with the following data: ', { targetTalk, personalInfo })
-    injectCss()
-    // @TODO: apply more sophisticated form detection method
-    const formInputs = document.querySelectorAll<FocusableTarget>('input, textarea, [contenteditable]')
-    const visibleInputs = Array.from(formInputs).filter(isElementVisible)
+const onStart = async (request: WorkerMessage | SidebarMessage) => {
+    if ('targetTalk' in request) {
+        const {targetTalk, personalInfo} = request
+        console.log('Initiating submission process with the following data: ', {targetTalk, personalInfo})
 
-    const activeInput = writable(visibleInputs[0])
-
-    const { target, tooltip } = createTooltip()
-    new FillSelector({ target, props: { activeTalk: targetTalk, personalInfo, activeInput } })
-
-
-    drawTooltip(visibleInputs[0], tooltip)
-
-    // Manual tooltip trigger
-    // document.addEventListener('keydown', function(event) {
-    //     if (event.altKey && event.key === 'q') {
-    //         const activeElement = document.activeElement
-    //         if (activeElement && activeElement.focus()) {
-    //             activeInput.set(activeElement as FocusableTarget)
-    //             drawTooltip(activeElement, tooltip)
-    //         }
-    //     }
-    // });
-
-    visibleInputs.forEach(input => {
-        input.addEventListener('focus', () => {
-            activeInput.set(input)
-            drawTooltip(input, tooltip)
+        // At this point we only expect messages from sidebar
+        chrome.runtime.onMessage.addListener(async (_, __, sendResponse) => {
+            sendResponse({ started: targetTalk })
         })
-    })
+
+        injectCss()
+        // @TODO: apply more sophisticated form detection method
+        const formInputs = document.querySelectorAll<FocusableTarget>('input, textarea, [contenteditable]')
+        const visibleInputs = Array.from(formInputs).filter(isElementVisible)
+
+        const activeInput = writable(visibleInputs[0])
+
+        const {target, tooltip} = createTooltip()
+        new FillSelector({target, props: {activeTalk: targetTalk, personalInfo, activeInput}})
+
+
+        drawTooltip(visibleInputs[0], tooltip)
+
+        // Manual tooltip trigger
+        // document.addEventListener('keydown', function(event) {
+        //     if (event.altKey && event.key === 'q') {
+        //         const activeElement = document.activeElement
+        //         if (activeElement && activeElement.focus()) {
+        //             activeInput.set(activeElement as FocusableTarget)
+        //             drawTooltip(activeElement, tooltip)
+        //         }
+        //     }
+        // });
+
+        visibleInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                activeInput.set(input)
+                drawTooltip(input, tooltip)
+            })
+        })
+    }
 }
 
 const init = async () => {

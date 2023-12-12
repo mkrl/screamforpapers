@@ -12,23 +12,27 @@
 
     let talks: Talk[] = [];
     let lastSyncTime: string = "never";
-    let selectedTalk: Talk;
-    let submitInitialized = false;
+    export let selectedTalk: Talk | null = null;
+    export let submitInitialized = false;
 
     onMount(() => {
         storageLocal.get().then(({ talkList, lastSyncedAt }) => {
             if (talkList && lastSyncedAt) {
                 talks = talkList;
-                selectedTalk = talks[0]
+                if (!selectedTalk) {
+                    selectedTalk = talks[0]
+                }
                 lastSyncTime = lastSyncedAt;
             }
         });
     });
 
     const onRoll = async () => {
-        await storageLocal.set({ selectedTalk: selectedTalk.id })
-        await chrome.runtime.sendMessage({ submitTalk: selectedTalk.id });
-        submitInitialized = true
+        if (selectedTalk) {
+            await storageLocal.set({ selectedTalk: selectedTalk.id })
+            await chrome.runtime.sendMessage({ submitTalk: selectedTalk.id });
+            submitInitialized = true
+        }
     }
 
     const onClickDashboard = async () => {
