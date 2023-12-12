@@ -9,6 +9,8 @@
     import Button from "flowbite-svelte/Button.svelte";
     import P from "flowbite-svelte/P.svelte";
     import GradientButton from "flowbite-svelte/GradientButton.svelte";
+    import User from 'flowbite-svelte-icons/UserSolid.svelte';
+    import Tooltip from "flowbite-svelte/Tooltip.svelte";
 
     let talks: Talk[] = [];
     let lastSyncTime: string = "never";
@@ -42,8 +44,10 @@
     }
 </script>
 
-<section class="flex gap-6 justify-between flex-col h-screen p-6">
-    <div class="flex flex-col flex-grow">
+<section class="flex gap-6 justify-between flex-col p-6 relative">
+    <div class="flex flex-col flex-grow relative">
+        <Button pill size="xl" class="absolute right-2 top-6 !p-2.5" on:click={onClickDashboard}><User /></Button>
+        <Tooltip placement="bottom">Dashboard</Tooltip>
         {#if !submitInitialized}
             <Heading class="mb-6 mt-3">What are we submitting today?</Heading>
             {#if lastSyncTime === "never"}<P class="text-gray-500 dark:text-gray-400">Looks like you have not yet set up Github sync or have never synced. You can fix that in the dashboard.</P>{/if}
@@ -57,10 +61,10 @@
 
         {#if selectedTalk}
             {#if !submitInitialized}
-                <GradientButton color="pinkToOrange" pill class="mb-10" on:click={onRoll}>Let's roll</GradientButton>
+                <GradientButton color="pinkToOrange" pill class="mb-6" on:click={onRoll}>Let's roll</GradientButton>
             {/if}
             <TalkView talk={selectedTalk} />
         {/if}
     </div>
-    <Button pill color="light" on:click={onClickDashboard}>Dashboard</Button>
+
 </section>

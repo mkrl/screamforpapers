@@ -32,6 +32,7 @@ export default defineManifest(async (env) => ({
         open_in_tab: true,
     },
     action: {
+        default_popup: "src/popup/popup.html",
         default_icon: {
             "16": "src/assets/icons/icon-16.png",
             "32": "src/assets/icons/icon-32.png",
@@ -39,6 +40,5 @@ export default defineManifest(async (env) => ({
             "128": "src/assets/icons/icon-128.png",
         },
     },
-    host_permissions: ["<all_urls>"],
-    permissions: ["storage", "sidePanel", "activeTab","scripting","downloads"] as chrome.runtime.ManifestPermissions[],
+    permissions: ["storage", "activeTab","scripting"] as chrome.runtime.ManifestPermissions[],
 }));

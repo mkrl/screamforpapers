@@ -10,7 +10,7 @@ type WorkerMessage = {
     targetTalk: Talk,
     personalInfo: PersonalInfo
 }
-type SidebarMessage = {
+type PopupMessage = {
     status: string
 }
 
@@ -52,12 +52,12 @@ const injectCss = () => {
     document.head.append(style);
 }
 
-const onStart = async (request: WorkerMessage | SidebarMessage) => {
+const onStart = async (request: WorkerMessage | PopupMessage) => {
     if ('targetTalk' in request) {
         const {targetTalk, personalInfo} = request
         console.log('Initiating submission process with the following data: ', {targetTalk, personalInfo})
 
-        // At this point we only expect messages from sidebar
+        // At this point we only expect messages from the popup
         chrome.runtime.onMessage.addListener(async (_, __, sendResponse) => {
             sendResponse({ started: targetTalk })
         })
@@ -74,17 +74,6 @@ const onStart = async (request: WorkerMessage | SidebarMessage) => {
 
 
         drawTooltip(visibleInputs[0], tooltip)
-
-        // Manual tooltip trigger
-        // document.addEventListener('keydown', function(event) {
-        //     if (event.altKey && event.key === 'q') {
-        //         const activeElement = document.activeElement
-        //         if (activeElement && activeElement.focus()) {
-        //             activeInput.set(activeElement as FocusableTarget)
-        //             drawTooltip(activeElement, tooltip)
-        //         }
-        //     }
-        // });
 
         visibleInputs.forEach(input => {
             input.addEventListener('focus', () => {

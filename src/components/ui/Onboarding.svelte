@@ -4,22 +4,11 @@
     import TimelineItem from "flowbite-svelte/TimelineItem.svelte";
     import A from "flowbite-svelte/A.svelte";
     import Img from "flowbite-svelte/Img.svelte";
-    import sampleTopicFile from '../../assets/sample-topic-file.md?raw'
-    import sampleReadme from '../../assets/README.md?raw'
 
     import repoSelectImage from '../../assets/onboarding/repository.png'
     import permissionsSelectImage from '../../assets/onboarding/permissions.png'
 
     export let step = 0;
-
-    const onExampleDownload = (content: string, filename: string) => {
-        const blob = new Blob([content], {type: "text/markdown"});
-        const url = URL.createObjectURL(blob);
-        chrome.downloads.download({
-            url,
-            filename
-        });
-    }
 </script>
 
 <Heading class="mb-12">Let's set things up</Heading>
@@ -42,7 +31,7 @@
                     It's nice to have a field called "Title" or "title", but it is not required. If you don't have it, the file name will be used in some UI parts.
                     <br/>
                     <br/>
-                    To make things simpler, here is a <A on:click={() => onExampleDownload(sampleTopicFile, "sample-topic-file.md")}>sample topic file</A>.
+                    To make things simpler, here is a <A href="https://gist.githubusercontent.com/mkrl/04bd8ba6b93f8eb9e4a1b16cf7548fe8/raw/7494923391743c657388776389fe1cf417cee2f9/sample-topic-file.md" target="_blank">sample topic file</A>.
                 </p>
             </TimelineItem>
             <TimelineItem title="Tell a bit about yourself" >
@@ -52,7 +41,7 @@
                     Personal info has the same format as topics, but it's a single file called "README.md" in the root of your repository.
                     <br/>
                     <br/>
-                    Here's another <A on:click={() => onExampleDownload(sampleReadme, "README.md")}>example</A>.
+                    Here's another <A href="https://gist.githubusercontent.com/mkrl/04bd8ba6b93f8eb9e4a1b16cf7548fe8/raw/7494923391743c657388776389fe1cf417cee2f9/README.md" target="_blank">example</A>.
                 </p>
             </TimelineItem>
             <TimelineItem title="Create a personal access token" >

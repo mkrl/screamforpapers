@@ -1,4 +1,4 @@
-import SidePanel from "../components/SidePanel.svelte";
+import StartPanel from "../components/StartPanel.svelte";
 import '../app.pcss'
 import type {Talk} from "../storage";
 
@@ -13,10 +13,9 @@ async function render() {
         if (tab?.id) {
             try {
                 // Trying to understand if the script is already injected
-                const response = await chrome.tabs.sendMessage(tab.id, { status: "have you started yet?" });
+                const response: ContentScriptMessage = await chrome.tabs.sendMessage(tab.id, { status: "have you started yet?" });
                 // Content script only responds with ContentScriptMessage
-                console.log(response)
-                new SidePanel({
+                new StartPanel({
                     target,
                     props: {
                         selectedTalk: response.started,
@@ -25,7 +24,7 @@ async function render() {
                 })
             } catch (e) {
                 console.log('The tab has not yet started the submission process')
-                new SidePanel({
+                new StartPanel({
                     target,
                 })
             }

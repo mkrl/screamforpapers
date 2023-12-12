@@ -20,7 +20,6 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 dashboard: 'src/dashboard/dashboard.html',
-                sidepanel: 'src/sidepanel/sidepanel.html'
             }
         }
     }

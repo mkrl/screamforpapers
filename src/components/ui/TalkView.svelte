@@ -11,7 +11,7 @@
 </script>
 
 {#if talk}
-    <Card class="flex flex-col p-1 w-full max-w-none h-full overflow-y-auto">
+    <Card class="flex flex-col w-full max-w-none h-full overflow-y-auto p-4">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{getTalkName(talk)} @
             <code class="bg-gray-200 p-1 rounded-md">
                 <a href="{talk.__revision.link}" target="_blank">{talk.__revision.sha.slice(0,7)}</a>
