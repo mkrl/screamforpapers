@@ -7,6 +7,7 @@
     import SelfView from "./SelfView.svelte";
     import Onboarding from "./ui/Onboarding.svelte";
     import SubmissionsView from "./SubmissionsView.svelte";
+    import Wishlist from "./Wishlist.svelte";
 
     export let forcedState: DashboardForcedState = undefined
 
@@ -25,13 +26,6 @@
                 "Options": true
             }
         }
-        if (state === "sync") {
-            return {
-                "Papers": true,
-                "Me": false,
-                "Options": false
-            }
-        }
         return {
             "Papers": true,
             "Me": false,
@@ -43,7 +37,7 @@
 </script>
 
 <div class="h-screen grid grid-cols-12 gap-6 p-6">
-    <aside class="col-span-4 border-2 border-dashed rounded-xl p-6">
+    <aside class="col-span-4 border-2 border-dashed rounded-xl p-6 overflow-y-auto" style="height: calc(100vh - 3rem)">
         <Tabs>
             <TabItem bind:open={activeTab['Papers']} title="Papers">
                 <PaperView />
@@ -57,11 +51,21 @@
         </Tabs>
     </aside>
 
-    <main class="col-span-8 border-2 border-dashed rounded-xl p-6 overflow-y-auto">
-        {#if forcedState === "welcome"}
+    {#if forcedState === "welcome"}
+        <main class="col-span-8 border-2 border-dashed rounded-xl p-6 overflow-y-auto">
             <Onboarding step={activeTab['Options'] ? 0 : 1} />
-        {:else}
-            <SubmissionsView />
-        {/if}
-    </main>
+        </main>
+    {:else}
+        <main class="grid-rows-2 col-span-8 gap-6 grid auto-rows-fr" style="height: calc(100vh - 3rem)">
+            <section class="border-2 border-dashed rounded-xl p-6 overflow-y-auto">
+                <Wishlist />
+            </section>
+            <section class="border-2 border-dashed rounded-xl p-6 overflow-y-auto">
+                <SubmissionsView />
+            </section>
+        </main>
+    {/if}
+
+
+
 </div>

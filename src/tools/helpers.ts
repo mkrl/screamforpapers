@@ -1,4 +1,4 @@
-import type {Talk, TalkSubmission} from "../storage";
+import type {Talk, TalkSubmission, WishlistItem} from "../storage";
 
 export type FocusableTarget = HTMLTextAreaElement | HTMLInputElement
 
@@ -55,5 +55,11 @@ export const validateSubmissions = (submissions: TalkSubmission[]) => {
     return submissions.filter(submission => {
         const {id, date, name, url, sha} = submission
         return id && date && name && url && sha
+    })
+}
+export const validateWishlist = (list: WishlistItem[]) => {
+    return list.filter(item => {
+        const {dateEnds, name, url} = item
+        return dateEnds && name && url
     })
 }

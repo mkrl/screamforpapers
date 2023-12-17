@@ -20,6 +20,13 @@ export type TalkSubmission = {
     sha: string;
 }
 
+export type WishlistItem = {
+    dateEnds: string;
+    name: string;
+    url: string;
+    done: boolean;
+}
+
 type PersonalInfoMeta = {
     name?: string;
     email?: string;
@@ -34,11 +41,12 @@ type SyncExtensionStorage = {
     repo: string | null;
 };
 
-type LocalExtensionStorage = {
+export type LocalExtensionStorage = {
     lastSyncedAt?: string;
     personalInfo?: PersonalInfo;
     talkList?: Talk[];
     submissions?: TalkSubmission[];
+    wishlist?: WishlistItem[];
     selectedTalk?: string;
 };
 
@@ -51,6 +59,7 @@ const defaultLocalStorage: LocalExtensionStorage = {
     lastSyncedAt: 'never',
     personalInfo: {},
     talkList: [],
+    wishlist: [],
     submissions: [],
     selectedTalk: ''
 };

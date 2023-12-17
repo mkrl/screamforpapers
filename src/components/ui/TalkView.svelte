@@ -17,7 +17,7 @@
             <RevisionBadge sha={talk.__revision.sha} link={talk.__revision.link}/>
         </h5>
         {#each Object.keys(talk).filter(publicKeysOnly) as key}
-            <h3 class="mb-1 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{key}</h3>
+            <h3 class="mb-1 text-lg font-bold tracking-tight text-gray-900 dark:text-white whitespace-pre-line">{key}</h3>
             <P class="mb-2">{talk[key]}</P>
         {/each}
     </Card>

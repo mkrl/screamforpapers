@@ -10,13 +10,18 @@
     import P from "flowbite-svelte/P.svelte";
     import GradientButton from "flowbite-svelte/GradientButton.svelte";
     import User from 'flowbite-svelte-icons/UserSolid.svelte';
+    import Heart from 'flowbite-svelte-icons/HeartSolid.svelte';
     import Tooltip from "flowbite-svelte/Tooltip.svelte";
+    import DividerWithText from "./ui/DividerWithText.svelte";
+    import DeadlineSelector from "./ui/DeadlineSelector.svelte";
 
     let talks: Talk[] = [];
     let lastSyncTime: string = "never";
     export let selectedTalk: Talk | null = null;
     export let submitInitialized = false;
     export let submitFinished = false;
+
+    let saveForLater = false;
 
     onMount(() => {
         storageLocal.get().then(({ talkList, lastSyncedAt }) => {
@@ -68,36 +73,50 @@
             url: "src/dashboard/dashboard.html"
         });
     }
+
+    const onSaveLater = async () => {
+        saveForLater = true
+    }
 </script>
 
 <section class="flex gap-6 justify-between flex-col p-6 relative">
     <div class="flex flex-col flex-grow relative">
         <Button pill size="xl" class="absolute right-2 top-4 !p-2.5" on:click={onClickDashboard}><User /></Button>
         <Tooltip placement="bottom">Dashboard</Tooltip>
-        {#if !submitInitialized}
-            <Heading class="mb-6 mt-3">What are we submitting today?</Heading>
-            {#if lastSyncTime === "never"}<P class="text-gray-500 dark:text-gray-400">Looks like you have not yet set up Github sync or have never synced. You can fix that in the dashboard.</P>{/if}
-            {#if talks.length === 0 && lastSyncTime !== "never"}<P class="text-gray-500 dark:text-gray-400">Looks like you have not added any talks yet. You can do that by pushing any suitable markdown files to your repo and then syncing again in the dashboard.</P>{/if}
-            {#if talks.length > 0}
-                <TalkSelect options={talks} bind:value={selectedTalk} displayFn={getTalkName} />
+        {#if !saveForLater}
+            {#if !submitInitialized}
+                <Heading class="mb-6 mt-3">What are we submitting today?</Heading>
+                {#if lastSyncTime === "never"}<P class="text-gray-500 dark:text-gray-400">Looks like you have not yet set up Github sync or have never synced. You can fix that in the dashboard.</P>{/if}
+                {#if talks.length === 0 && lastSyncTime !== "never"}<P class="text-gray-500 dark:text-gray-400">Looks like you have not added any talks yet. You can do that by pushing any suitable markdown files to your repo and then syncing again in the dashboard.</P>{/if}
+                {#if talks.length > 0}
+                    <TalkSelect options={talks} bind:value={selectedTalk} displayFn={getTalkName} />
+                {/if}
+            {:else}
+                {#if !submitFinished}
+                    <Heading class="mb-6 mt-3">Way to go!</Heading>
+                    <P class="text-gray-500 dark:text-gray-400 mb-4">Once you're done filling everything, record your submission with the button below before you submit.</P>
+                    <GradientButton color="pinkToOrange" outline pill class="mb-6" on:click={onDone}>I'm done</GradientButton>
+                {:else}
+                    <Heading class="mb-6 mt-3">Outstanding!</Heading>
+                    <P class="text-gray-500 dark:text-gray-400 mb-4">Your submission has been recorded. You can access the record by visiting the dashboard.</P>
+                {/if}
+
+            {/if}
+
+            {#if selectedTalk}
+                {#if !submitInitialized}
+                    <GradientButton color="pinkToOrange" pill class="mb-2" on:click={onRoll}>Let's roll</GradientButton>
+                    <DividerWithText class="mb-2">or</DividerWithText>
+                    <Button pill color="alternative" on:click={onSaveLater} outline class="mb-6">
+                        <Heart class="w-3.5 h-3.5 me-2 text-red-600"/>
+                        Save for later
+                    </Button>
+                {/if}
+                <TalkView talk={selectedTalk} />
             {/if}
         {:else}
-            {#if !submitFinished}
-                <Heading class="mb-6 mt-3">Way to go!</Heading>
-                <P class="text-gray-500 dark:text-gray-400 mb-4">Once you're done filling everything, record your submission with the button below before you submit.</P>
-                <GradientButton color="pinkToOrange" outline pill class="mb-6" on:click={onDone}>I'm done</GradientButton>
-            {:else}
-                <Heading class="mb-6 mt-3">Outstanding!</Heading>
-                <P class="text-gray-500 dark:text-gray-400 mb-4">Your submission has been recorded. You can access the record by visiting the dashboard.</P>
-            {/if}
-
-        {/if}
-
-        {#if selectedTalk}
-            {#if !submitInitialized}
-                <GradientButton color="pinkToOrange" pill class="mb-6" on:click={onRoll}>Let's roll</GradientButton>
-            {/if}
-            <TalkView talk={selectedTalk} />
+            <Heading class="mb-6 mt-3">Let's remember<br/> this for later</Heading>
+            <DeadlineSelector />
         {/if}
     </div>
 
