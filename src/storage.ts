@@ -12,6 +12,14 @@ export type Talk = {
     [key: string]: string;
 } & TalkMeta
 
+export type TalkSubmission = {
+    id: string;
+    date: string;
+    name: string;
+    url: string;
+    sha: string;
+}
+
 type PersonalInfoMeta = {
     name?: string;
     email?: string;
@@ -30,6 +38,7 @@ type LocalExtensionStorage = {
     lastSyncedAt?: string;
     personalInfo?: PersonalInfo;
     talkList?: Talk[];
+    submissions?: TalkSubmission[];
     selectedTalk?: string;
 };
 
@@ -42,6 +51,7 @@ const defaultLocalStorage: LocalExtensionStorage = {
     lastSyncedAt: 'never',
     personalInfo: {},
     talkList: [],
+    submissions: [],
     selectedTalk: ''
 };
 

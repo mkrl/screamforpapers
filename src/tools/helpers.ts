@@ -1,4 +1,4 @@
-import type {Talk} from "../storage";
+import type {Talk, TalkSubmission} from "../storage";
 
 export type FocusableTarget = HTMLTextAreaElement | HTMLInputElement
 
@@ -43,4 +43,17 @@ export const simulateInput = (element: FocusableTarget, text: string) => {
         console.warn("Can't write into this element as it is not focusable", element, e);
         return false
     }
+}
+
+export const replaceShaInUrl = (url: string, newSha: string) => {
+    const regex = /\/blob\/[0-9a-f]+\//; // Regular expression to match the SHA string
+
+    return url.replace(regex, `/blob/${newSha}/`);
+}
+
+export const validateSubmissions = (submissions: TalkSubmission[]) => {
+    return submissions.filter(submission => {
+        const {id, date, name, url, sha} = submission
+        return id && date && name && url && sha
+    })
 }

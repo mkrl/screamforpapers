@@ -8,6 +8,7 @@
     import Li from "flowbite-svelte/Li.svelte";
     import {syncWithGithub} from "../tools/github";
     import PlaceholderPanel from "./ui/PlaceholderPanel.svelte";
+    import RevisionBadge from "./ui/RevisionBadge.svelte";
 
     let lastSyncedAt: string = 'never';
     let talks: Talk[] = [];
@@ -58,7 +59,7 @@
     {#if talks.length !== 0 && lastSyncedAt !== 'never' && repo && token}
         <List list="disc" class="mb-6">
             {#each talks as talk}
-                <Li>{getTalkName(talk)} @ <code class="bg-gray-200 p-1 rounded-md"><a href="{talk.__revision.link}" target="_blank">{talk.__revision.sha.slice(0,7)}</a></code></Li>
+                <Li>{getTalkName(talk)} @ <RevisionBadge link={talk.__revision.link} sha={talk.__revision.sha} /></Li>
             {/each}
         </List>
     {/if}

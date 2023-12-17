@@ -16,6 +16,7 @@
     let lastSyncTime: string = "never";
     export let selectedTalk: Talk | null = null;
     export let submitInitialized = false;
+    export let submitFinished = false;
 
     onMount(() => {
         storageLocal.get().then(({ talkList, lastSyncedAt }) => {
@@ -37,6 +38,31 @@
         }
     }
 
+    const onDone = async () => {
+        const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+        if (tab.url && tab.title) {
+            const {submissions} = await storageLocal.get()
+            if (submissions && selectedTalk) {
+                await storageLocal.set({
+                    submissions: [
+                        {
+                            id: selectedTalk.id,
+                            date: new Date().toString(),
+                            sha: selectedTalk?.__revision.sha,
+                            url: tab.url,
+                            name: tab.title
+                        },
+                        ...submissions,
+                    ]
+                })
+                // @TODO: let background script know that we're done and make the content script report it back
+                submitFinished = true
+            }
+        } else {
+            console.error('Not a valid tab')
+        }
+    }
+
     const onClickDashboard = async () => {
         await chrome.tabs.create({
             url: "src/dashboard/dashboard.html"
@@ -46,7 +72,7 @@
 
 <section class="flex gap-6 justify-between flex-col p-6 relative">
     <div class="flex flex-col flex-grow relative">
-        <Button pill size="xl" class="absolute right-2 top-6 !p-2.5" on:click={onClickDashboard}><User /></Button>
+        <Button pill size="xl" class="absolute right-2 top-4 !p-2.5" on:click={onClickDashboard}><User /></Button>
         <Tooltip placement="bottom">Dashboard</Tooltip>
         {#if !submitInitialized}
             <Heading class="mb-6 mt-3">What are we submitting today?</Heading>
@@ -56,7 +82,15 @@
                 <TalkSelect options={talks} bind:value={selectedTalk} displayFn={getTalkName} />
             {/if}
         {:else}
-            <Heading class="mb-6 mt-3">You're on your way to submit your next CFP, way to go!</Heading>
+            {#if !submitFinished}
+                <Heading class="mb-6 mt-3">Way to go!</Heading>
+                <P class="text-gray-500 dark:text-gray-400 mb-4">Once you're done filling everything, record your submission with the button below before you submit.</P>
+                <GradientButton color="pinkToOrange" outline pill class="mb-6" on:click={onDone}>I'm done</GradientButton>
+            {:else}
+                <Heading class="mb-6 mt-3">Outstanding!</Heading>
+                <P class="text-gray-500 dark:text-gray-400 mb-4">Your submission has been recorded. You can access the record by visiting the dashboard.</P>
+            {/if}
+
         {/if}
 
         {#if selectedTalk}

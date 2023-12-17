@@ -6,6 +6,7 @@
     import PaperView from "./PaperView.svelte";
     import SelfView from "./SelfView.svelte";
     import Onboarding from "./ui/Onboarding.svelte";
+    import SubmissionsView from "./SubmissionsView.svelte";
 
     export let forcedState: DashboardForcedState = undefined
 
@@ -59,6 +60,8 @@
     <main class="col-span-8 border-2 border-dashed rounded-xl p-6 overflow-y-auto">
         {#if forcedState === "welcome"}
             <Onboarding step={activeTab['Options'] ? 0 : 1} />
+        {:else}
+            <SubmissionsView />
         {/if}
     </main>
 </div>
