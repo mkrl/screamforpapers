@@ -1,6 +1,6 @@
 {
   "name": "Scream For Papers",
-  "description": "An assistance extension allowing you to save up on time while filling out long CFP forms",
+  "description": "An assistance extension that saves your time when filling out long CFP forms",
   "version": "1.0.0",
   "type": "module",
   "repository": {
