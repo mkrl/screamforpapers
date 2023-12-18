@@ -9,6 +9,7 @@
     import {syncWithGithub} from "../tools/github";
     import PlaceholderPanel from "./ui/PlaceholderPanel.svelte";
     import RevisionBadge from "./ui/RevisionBadge.svelte";
+    import { writable } from 'svelte/store';
 
     let lastSyncedAt: string = 'never';
     let talks: Talk[] = [];
@@ -16,6 +17,14 @@
 
     let token: string | null = null;
     let repo: string | null = null;
+
+    let log: string = '';
+
+    const logData = writable('')
+
+    logData.subscribe((value) => {
+        log = value;
+    })
 
     onMount(async () => {
         const { talkList, lastSyncedAt: lastSync } = await storageLocal.get()
@@ -29,17 +38,24 @@
     const sync = async () => {
         if (token && repo) {
             loading = true;
-            const syncData = await syncWithGithub({token, repo})
-            if (syncData) {
-                const { personalInfo, talkList } = syncData
-                talks = talkList;
-                lastSyncedAt = new Date().toString()
-                if (personalInfo) {
-                    await storageLocal.set({ talkList, personalInfo, lastSyncedAt })
+            try {
+                const syncData = await syncWithGithub({token, repo, logFn: logData.set})
+                if (syncData) {
+                    const { personalInfo, talkList } = syncData
+                    talks = talkList;
+                    lastSyncedAt = new Date().toString()
+                    if (personalInfo) {
+                        await storageLocal.set({ talkList, personalInfo, lastSyncedAt })
+                    }
                 }
+                loading = false;
+            } catch (e) {
+                loading = false;
             }
-            loading = false;
         }
+        setTimeout(() => {
+            logData.set('')
+        }, 5000)
     }
 </script>
 
@@ -65,5 +81,8 @@
     {/if}
     {#if repo && token}
         <Button pill on:click={sync} loading={loading} disabled={loading}>{loading ? "Syncing..." : "Sync now!"}</Button>
+        {#if log}
+            <span class="ml-4 text-gray-400 italic">{log}</span>
+        {/if}
     {/if}
 </section>
