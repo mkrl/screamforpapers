@@ -17,39 +17,40 @@ type PopupMessage = {
 const createTooltip = () => {
     const tooltip = document.createElement('div')
     const target = document.createElement('div')
-    tooltip.className = 'rounded-lg shadow-md py-2 px-3 text-sm bg-gray-700 font-medium'
+    const shadowRoot = target.attachShadow({ mode: "open" })
     tooltip.id = 'sfp-tooltip'
-    tooltip.innerHTML = `<div class="sfp-tooltip-arrow" data-popper-arrow></div>`
     tooltip.append(target)
     document.body.append(tooltip)
-    return { tooltip, target }
+    return { tooltip, target: shadowRoot, container: target }
 }
 
 const drawTooltip = (target: Element, content: HTMLElement) => {
-    createPopper(target, content, {
-        placement: 'left',
+    content.style.display = 'block'
+    const popper = createPopper(target, content, {
+        placement: 'bottom',
         modifiers: [
             {
                 name: 'offset',
                 options: {
-                    offset: [0, 10],
-                },
-            },
-            {
-                name: 'flip',
-                options: {
-                    fallbackPlacements: ['right'],
+                    offset: [0, 2],
                 },
             },
         ],
     });
+    // close tooltip when esc is pressed
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            popper.destroy()
+            content.style.display = 'none'
+        }
+    })
 }
 
-// @TODO this generates MASSIVE bundle (170kb+) for content script since it's not possible to only detect used styles while inlining, but it prevents style leaks
-const injectCss = () => {
-    let style = document.createElement('style');
-    style.textContent = css;
-    document.head.append(style);
+// @TODO this generates MASSIVE bundle (160kb+) for content script since it's not possible to only detect used styles while inlining, but it prevents style leaks
+const injectCss = (host: ShadowRoot) => {
+    const sheet = new CSSStyleSheet();
+    sheet.replaceSync(css);
+    host.adoptedStyleSheets = [sheet];
 }
 
 const onStart = async (request: WorkerMessage | PopupMessage) => {
@@ -62,21 +63,29 @@ const onStart = async (request: WorkerMessage | PopupMessage) => {
             sendResponse({ started: targetTalk })
         })
 
-        injectCss()
+
         // @TODO: apply more sophisticated form detection method
         const formInputs = document.querySelectorAll<FocusableTarget>('input, textarea, [contenteditable]')
         const visibleInputs = Array.from(formInputs).filter(isElementVisible)
 
         const activeInput = writable(visibleInputs[0])
 
-        const {target, tooltip} = createTooltip()
+        const {target, tooltip, container} = createTooltip()
+        injectCss(target)
         new FillSelector({target, props: {activeTalk: targetTalk, personalInfo, activeInput}})
 
 
         drawTooltip(visibleInputs[0], tooltip)
+        visibleInputs[0].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+        const width = visibleInputs[0].getBoundingClientRect().width
+        container.style.width = `${width}px`
 
         visibleInputs.forEach(input => {
+            input.setAttribute('autocomplete', 'one-time-code')
             input.addEventListener('focus', () => {
+                const width = input.getBoundingClientRect().width
+                container.style.width = `${width}px`
                 activeInput.set(input)
                 drawTooltip(input, tooltip)
             })
