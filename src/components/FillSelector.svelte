@@ -3,11 +3,9 @@
     import {publicKeysOnly, simulateInput} from '../tools/helpers'
     import type {FocusableTarget} from '../tools/helpers'
 
-    import AccordionItem from "flowbite-svelte/AccordionItem.svelte";
-    import Accordion from "flowbite-svelte/Accordion.svelte";
-
-    import type {Writable} from "svelte/store";
+    import Accordion from "./ui/Accordion.svelte";
     import TalkSuggestion from "./ui/TalkSuggestion.svelte";
+    import type {Writable} from "svelte/store";
 
     export let activeTalk: Talk;
     export let personalInfo: PersonalInfo;
@@ -48,37 +46,79 @@
 
 </script>
 
-<section class="flex flex-col gap-2 shadow-md py-2 px-3 text-sm bg-white font-medium overflow-y-auto border-2 border-primary-200" style="max-height: 200px">
-    <div class="flex flex-row justify-between">
-        <div class="flex flex-col flex-grow p-1 border-r-2">
+<section class="shadow selector" style="max-height: 200px">
+    <div class="slots">
+        <div>
             {#each unusedPersonalFields as unusedField}
                 <TalkSuggestion on:click={() => onClick(unusedField, true)}>{unusedField}</TalkSuggestion>
             {/each}
         </div>
         <hr/>
-        <div class="flex flex-col flex-grow p-1">
+        <div>
             {#each unusedTalkFields as unusedField}
                 <TalkSuggestion on:click={() => onClick(unusedField)}>{unusedField}</TalkSuggestion>
             {/each}
         </div>
     </div>
     {#if usedPersonalFields.length > 0 || usedTalkFields.length > 0}
-        <Accordion class="w-full" flush>
-            <AccordionItem>
+        <Accordion>
             <span slot="header">Show used</span>
-                {#if usedPersonalFields.length > 0}
-                    {#each usedPersonalFields as usedField}
-                        <TalkSuggestion on:click={() => onClickUsed(usedField, true)}>{usedField}</TalkSuggestion>
-                    {/each}
-                {/if}
-                {#if usedTalkFields.length > 0}
-                    {#each usedTalkFields as usedField}
-                        <TalkSuggestion on:click={() => onClickUsed(usedField)}>{usedField}</TalkSuggestion>
-                    {/each}
-                {/if}
-            </AccordionItem>
+            <div class="slots">
+                <div>
+                    {#if usedPersonalFields.length > 0}
+                        {#each usedPersonalFields as usedField}
+                            <TalkSuggestion on:click={() => onClickUsed(usedField, true)}>{usedField}</TalkSuggestion>
+                        {/each}
+                    {/if}
+                </div>
+                <hr/>
+                <div>
+                    {#if usedTalkFields.length > 0}
+                        {#each usedTalkFields as usedField}
+                            <TalkSuggestion on:click={() => onClickUsed(usedField)}>{usedField}</TalkSuggestion>
+                        {/each}
+                    {/if}
+                </div>
+            </div>
         </Accordion>
     {/if}
 
 </section>
 
+<style>
+    .selector {
+        all: unset;
+        gap: 0.5rem;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 500;
+        overflow-y: auto;
+        border: 2px solid rgb(255 228 222);
+    }
+
+    .slots {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border-bottom: 2px solid rgb(255 228 222);
+    }
+    .slots > div {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .slots > hr {
+        border: 0;
+        width: 2px;
+        background-color: rgb(255 228 222);
+        margin: 0;
+    }
+
+    .shadow {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+</style>

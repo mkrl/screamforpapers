@@ -2,7 +2,6 @@ import FillSelector from "../components/FillSelector.svelte";
 import type {PersonalInfo, Talk} from "../storage";
 import { createPopper } from '@popperjs/core';
 import { writable } from 'svelte/store';
-import css from '../content-styles.pcss?inline'
 
 import {type FocusableTarget, isElementVisible} from "../tools/helpers";
 
@@ -46,13 +45,6 @@ const drawTooltip = (target: Element, content: HTMLElement) => {
     })
 }
 
-// @TODO this generates MASSIVE bundle (160kb+) for content script since it's not possible to only detect used styles while inlining, but it prevents style leaks
-const injectCss = (host: ShadowRoot) => {
-    const sheet = new CSSStyleSheet();
-    sheet.replaceSync(css);
-    host.adoptedStyleSheets = [sheet];
-}
-
 const onStart = async (request: WorkerMessage | PopupMessage) => {
     if ('targetTalk' in request) {
         const {targetTalk, personalInfo} = request
@@ -71,7 +63,6 @@ const onStart = async (request: WorkerMessage | PopupMessage) => {
         const activeInput = writable(visibleInputs[0])
 
         const {target, tooltip, container} = createTooltip()
-        injectCss(target)
         new FillSelector({target, props: {activeTalk: targetTalk, personalInfo, activeInput}})
 
 
