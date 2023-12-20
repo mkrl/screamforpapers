@@ -6,6 +6,7 @@
     import TableHead from "flowbite-svelte/TableBodyRow.svelte";
     import TableHeadCell from "flowbite-svelte/TableHeadCell.svelte";
     import Toggle from "flowbite-svelte/Toggle.svelte";
+    import CloseCircleSolid from 'flowbite-svelte-icons/CloseCircleSolid.svelte';
 
     import {storageLocal, type WishlistItem} from "../storage";
     import PlaceholderPanel from "./ui/PlaceholderPanel.svelte";
@@ -36,27 +37,43 @@
             }
         });
     };
+
+    const onRemove = (item: WishlistItem) => {
+        storageLocal.get().then(({ wishlist }) => {
+            if (wishlist) {
+                const index = wishlist.findIndex((i) => i.url === item.url);
+                if (index !== -1) {
+                    wishlist.splice(index, 1);
+                    items = wishlist
+                    storageLocal.set({ wishlist });
+                }
+            }
+        });
+    };
 </script>
 
 <div class="flex flex-grow justify-between">
     <Heading class="mb-6 mt-3">CFP Wishlist</Heading>
     <ImportExportShortcut dataType="wishlist" {items} />
 </div>
-<section class="p-4 bg-gray-50 rounded-lg dark:bg-gray-800 text-base">
+<section class="rounded-lg text-base">
     {#if items.length === 0}
         <PlaceholderPanel>
             You can add a conference to your wishlist by opening the CFP page and clicking on "Save for later" in the extension popup
         </PlaceholderPanel>
     {:else}
-        <Table hoverable>
+        <Table hoverable shadow>
             <TableHead>
                 <TableHeadCell>Name</TableHeadCell>
                 <TableHeadCell>CFP deadline</TableHeadCell>
                 <TableHeadCell>Status</TableHeadCell>
+                <TableHeadCell>
+                    <span class="sr-only">Remove</span>
+                </TableHeadCell>
             </TableHead>
             <TableBody>
                 {#each items as item}
-                    <TableBodyRow>
+                    <TableBodyRow class="group">
                         <TableBodyCell>
                             <A href={item.url} target="_blank">
                                 {item.name}
@@ -68,6 +85,9 @@
                         <TableBodyCell>
                             <Toggle checked={item.done} on:change={() => onToggle(item)} />
                         </TableBodyCell>
+                        <TableHeadCell>
+                            <A class="group-hover:visible invisible flex" title="Remove" on:click={() => onRemove(item)}><CloseCircleSolid /></A>
+                        </TableHeadCell>
                     </TableBodyRow>
                 {/each}
             </TableBody>

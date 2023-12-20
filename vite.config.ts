@@ -6,9 +6,7 @@ import purgeCss from "vite-plugin-tailwind-purgecss";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [svelte({
-        emitCss: false,
-    }), crx({ manifest }), purgeCss()],
+    plugins: [svelte(), crx({ manifest }), purgeCss()],
     // HACK: https://github.com/crxjs/chrome-extension-tools/issues/696
     // https://github.com/crxjs/chrome-extension-tools/issues/746
     server: {
