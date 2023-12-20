@@ -20,7 +20,7 @@
 
     const save = async () => {
         await storageSync.set({ token, repo })
-        successMessage = "Options saved!";
+        successMessage = "Options saved";
 
         setTimeout(() => {
             successMessage = null;
@@ -36,10 +36,9 @@
 <Label for="repo">
     Repo URL:
 </Label>
-<Input class="mb-3" bind:value={repo} type="text" id="repo" placeholder="Can be private, be sure the token has read access to it!" />
-<div class="flex gap-4 items-start">
-    <Button  pill on:click={save}>Save GitHub settings</Button>
-    <Toast open={!!successMessage} color="green">{successMessage}</Toast>
-</div>
+<Input class="mb-6" bind:value={repo} type="text" id="repo" placeholder="Can be private, be sure the token has read access to it!" />
 
-
+<Button  pill on:click={save}>Save GitHub settings</Button>
+{#if successMessage}
+    <span class="ml-4 text-gray-400 italic text-base">{successMessage}</span>
+{/if}

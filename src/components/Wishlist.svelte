@@ -14,6 +14,7 @@
     import Heading from "flowbite-svelte/Heading.svelte";
     import A from "flowbite-svelte/A.svelte";
     import ImportExportShortcut from "./ui/ImportExportShortcut.svelte";
+    import {getDueDateColor} from "../tools/helpers";
 
     let items: WishlistItem[] = [];
 
@@ -52,11 +53,11 @@
     };
 </script>
 
-<div class="flex flex-grow justify-between">
+<div class="flex flex-grow justify-between mb-4">
     <Heading class="mb-6 mt-3">CFP Wishlist</Heading>
     <ImportExportShortcut dataType="wishlist" {items} />
 </div>
-<section class="rounded-lg text-base">
+<section class="text-base">
     {#if items.length === 0}
         <PlaceholderPanel>
             You can add a conference to your wishlist by opening the CFP page and clicking on "Save for later" in the extension popup
@@ -80,7 +81,9 @@
                             </A>
                         </TableBodyCell>
                         <TableBodyCell>
-                            {new Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale).format(new Date(item.dateEnds))}
+                            <span class={getDueDateColor(new Date(), new Date(item.dateEnds))}>
+                                {new Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale).format(new Date(item.dateEnds))}
+                            </span>
                         </TableBodyCell>
                         <TableBodyCell>
                             <Toggle checked={item.done} on:change={() => onToggle(item)} />

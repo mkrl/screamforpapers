@@ -63,3 +63,21 @@ export const validateWishlist = (list: WishlistItem[]) => {
         return dateEnds && name && url
     })
 }
+
+const ONE_DAY = 1000 * 60 * 60 * 24;
+const ONE_WEEK = ONE_DAY * 7;
+
+// Take two dates and return the corresponding tailwindcss color class depending on the difference between them
+export const getDueDateColor = (date: Date, dateEnds: Date) => {
+    const diff = dateEnds.getTime() - date.getTime();
+if (diff < 0) {
+        return 'text-gray-500';
+    }
+    if (diff < ONE_DAY * 2) {
+        return 'text-red-500';
+    }
+    if (diff < ONE_WEEK * 2) {
+        return 'text-yellow-500';
+    }
+    return 'text-green-500';
+}

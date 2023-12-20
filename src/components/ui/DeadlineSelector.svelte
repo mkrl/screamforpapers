@@ -17,13 +17,13 @@
             if (wishlist) {
                 await storageLocal.set({
                     wishlist: [
+                        ...wishlist,
                         {
                             dateEnds: String(date),
                             url: tab.url,
                             name: tab.title,
                             done: false,
                         },
-                        ...wishlist,
                     ]
                 })
                 saved = true

@@ -49,11 +49,11 @@
     }
 </script>
 
-<div class="flex flex-grow justify-between">
-<Heading class="mb-6 mt-3">Your submissions</Heading>
+<div class="flex flex-grow mb-4 justify-between">
+    <Heading class="mb-6 mt-3">Your submissions</Heading>
     <ImportExportShortcut dataType="submissions" items={talkSubmissions} />
 </div>
-<section class="rounded-lg text-base">
+<section class="text-base">
     {#if talkSubmissions.length === 0}
         <PlaceholderPanel>
             Once you record a submission, it will appear here
