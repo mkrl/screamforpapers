@@ -19,6 +19,7 @@ const createTooltip = () => {
     const shadowRoot = target.attachShadow({ mode: "open" })
     tooltip.id = 'sfp-tooltip'
     tooltip.append(target)
+    tooltip.style.zIndex = '9999'
     document.body.append(tooltip)
     return { tooltip, target: shadowRoot, container: target }
 }

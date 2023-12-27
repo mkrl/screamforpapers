@@ -1,7 +1,7 @@
 {
   "name": "Scream For Papers",
   "description": "Save up on time while filling out long and repetitive CFP forms.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "repository": {
     "type": "git",
