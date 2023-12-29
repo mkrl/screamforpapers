@@ -154,7 +154,9 @@
                   )}
                 />
               {:else}
-                <span class="text-gray-400">N/A</span>
+                <code class="bg-gray-200 p-1 rounded-md">
+                  {talkSubmission.sha.slice(0, 7)}
+                </code>
               {/if}
             </TableBodyCell>
             <TableBodyCell>
