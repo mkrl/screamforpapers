@@ -5,8 +5,9 @@
   import TableBodyRow from 'flowbite-svelte/TableBodyRow.svelte'
   import TableHead from 'flowbite-svelte/TableHead.svelte'
   import TableHeadCell from 'flowbite-svelte/TableHeadCell.svelte'
-  import Toggle from 'flowbite-svelte/Toggle.svelte'
   import CloseCircleSolid from 'flowbite-svelte-icons/CloseCircleSolid.svelte'
+  import ArchiveSolid from 'flowbite-svelte-icons/ArchiveSolid.svelte'
+  import ArchiveOutline from 'flowbite-svelte-icons/ArchiveOutline.svelte'
 
   import { storageLocal, type WishlistItem } from '../storage'
   import PlaceholderPanel from './ui/PlaceholderPanel.svelte'
@@ -21,7 +22,24 @@
 
   const sortKey = writable<keyof WishlistItem>('url') // default sort key
   const sortDirection = writable(1) // default sort direction (ascending)
-  const sortItems = writable([...items]) // make a copy of the items array
+  const sortItems = writable([...items])
+
+  // Stuff that's either done or has passed the deadline
+  let upToDateItems: WishlistItem[] = []
+  let outdatedItems: WishlistItem[] = []
+
+  sortItems.subscribe((val) => {
+    outdatedItems = val.filter((item) => {
+      const now = new Date()
+      const deadline = new Date(item.dateEnds)
+      return item.done || deadline < now
+    })
+    upToDateItems = val.filter((item) => {
+      const now = new Date()
+      const deadline = new Date(item.dateEnds)
+      return !item.done && deadline >= now
+    })
+  })
 
   const sortTable = (key: keyof WishlistItem) => {
     // If the same key is clicked, reverse the sort direction
@@ -133,15 +151,12 @@
           class="cursor-pointer"
           on:click={() => sortTable('dateEnds')}>CFP deadline</TableHeadCell
         >
-        <TableHeadCell class="cursor-pointer" on:click={() => sortTable('done')}
-          >Status</TableHeadCell
-        >
         <TableHeadCell>
           <span class="sr-only">Remove</span>
         </TableHeadCell>
       </TableHead>
       <TableBody>
-        {#each $sortItems as item}
+        {#each upToDateItems as item}
           <TableBodyRow class="group">
             <TableBodyCell>
               <A href={item.url} target="_blank">
@@ -157,18 +172,63 @@
                 ).format(new Date(item.dateEnds))}
               </span>
             </TableBodyCell>
-            <TableBodyCell>
-              <Toggle checked={item.done} on:change={() => onToggle(item)} />
-            </TableBodyCell>
             <TableHeadCell>
               <A
-                class="group-hover:visible invisible flex"
+                class="group-hover:visible invisible cursor-pointer inline-flex mr-4"
+                title="Archive"
+                on:click={() => onToggle(item)}
+                ><ArchiveSolid class="cursor-pointer text-amber-500" /></A
+              >
+              <A
+                class="group-hover:visible invisible cursor-pointer inline-flex"
                 title="Remove"
-                on:click={() => onRemove(item)}><CloseCircleSolid /></A
+                on:click={() => onRemove(item)}
+                ><CloseCircleSolid class="cursor-pointer" /></A
               >
             </TableHeadCell>
           </TableBodyRow>
         {/each}
+        {#if outdatedItems.length > 0}
+          {#if upToDateItems.length > 0}
+            <TableBodyRow class="bg-gray-50">
+              <td colSpan={6} class="px-6 py-2 text-center">
+                Archived & overdue
+              </td>
+            </TableBodyRow>
+          {/if}
+          {#each outdatedItems as item}
+            <TableBodyRow class="group">
+              <TableBodyCell>
+                <A href={item.url} target="_blank">
+                  {item.name}
+                </A>
+              </TableBodyCell>
+              <TableBodyCell>
+                <span
+                  class={getDueDateColor(new Date(), new Date(item.dateEnds))}
+                >
+                  {new Intl.DateTimeFormat(
+                    Intl.DateTimeFormat().resolvedOptions().locale
+                  ).format(new Date(item.dateEnds))}
+                </span>
+              </TableBodyCell>
+              <TableHeadCell>
+                <A
+                  class="group-hover:visible invisible cursor-pointer inline-flex mr-4"
+                  title="Unarchive"
+                  on:click={() => onToggle(item)}
+                  ><ArchiveOutline class="cursor-pointer text-amber-500" /></A
+                >
+                <A
+                  class="group-hover:visible invisible cursor-pointer inline-flex"
+                  title="Remove"
+                  on:click={() => onRemove(item)}
+                  ><CloseCircleSolid class="cursor-pointer" /></A
+                >
+              </TableHeadCell>
+            </TableBodyRow>
+          {/each}
+        {/if}
       </TableBody>
     </Table>
   {/if}
