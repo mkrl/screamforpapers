@@ -4,6 +4,7 @@
   import TimelineItem from 'flowbite-svelte/TimelineItem.svelte'
   import A from 'flowbite-svelte/A.svelte'
   import Img from 'flowbite-svelte/Img.svelte'
+  import Kbd from 'flowbite-svelte/Kbd.svelte'
 
   import repoSelectImage from '../../assets/onboarding/repository.png'
   import permissionsSelectImage from '../../assets/onboarding/permissions.png'
@@ -98,6 +99,9 @@
       <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
         Click on the "Sync now!" button to pull your topics and personal info
         from GitHub.
+        <br />
+        Make sure all of your files are in the root of your repository and have the
+        <Kbd>.md</Kbd> extension.
       </p>
     </TimelineItem>
     <TimelineItem title="Start applying">
@@ -107,7 +111,16 @@
         <br />
         <br />
         Go to any CFP page and click on the extension icon in the top right corner
-        of your browser to open the sidebar.
+        of your browser to open the popup.
+      </p>
+    </TimelineItem>
+    <TimelineItem title="Submit">
+      <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
+        When you're done filling out the form, click on the "I'm done" button in
+        the extension popup <b>before</b> submitting the CFP form itself.
+        <br />
+        <br />
+        Yes, it's a bit annoying, but no software it perfect from the start!
       </p>
     </TimelineItem>
     <TimelineItem title="Your synced data only persists per-device">

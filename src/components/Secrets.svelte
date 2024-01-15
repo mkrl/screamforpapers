@@ -3,11 +3,12 @@
   import Button from 'flowbite-svelte/Button.svelte'
   import Input from 'flowbite-svelte/Input.svelte'
   import Label from 'flowbite-svelte/Label.svelte'
-  import Toast from 'flowbite-svelte/Toast.svelte'
+  import ButtonGroup from 'flowbite-svelte/ButtonGroup.svelte'
   import { onMount } from 'svelte'
 
   let token: string
   let repo: string
+  const isOnboarding = window.location.search.includes('welcome')
 
   let successMessage: string | null = null
 
@@ -24,6 +25,13 @@
     setTimeout(() => {
       successMessage = null
     }, 3000)
+  }
+
+  const onboard = () => {
+    const { origin, pathname } = window.location
+    window.location.href = `${origin}${pathname}${
+      isOnboarding ? '' : '?welcome'
+    }`
   }
 </script>
 
@@ -44,7 +52,15 @@
   placeholder="Can be private, be sure the token has read access to it!"
 />
 
-<Button pill on:click={save}>Save GitHub settings</Button>
+<div class="flex justify-between">
+  <Button pill on:click={save} color="primary">Save GitHub settings</Button>
+  <Button pill on:click={onboard} color="alternative"
+    >{isOnboarding
+      ? 'Skip the tour, let me cook'
+      : 'Open onboarding tour'}</Button
+  >
+</div>
+
 {#if successMessage}
   <span class="ml-4 text-gray-400 italic text-base">{successMessage}</span>
 {/if}

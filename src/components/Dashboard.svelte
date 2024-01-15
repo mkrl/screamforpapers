@@ -10,6 +10,7 @@
   import Img from 'flowbite-svelte/Img.svelte'
   import Logo from '../assets/icons/icon-128.png'
   import packageJson from '../../package.json'
+  import A from 'flowbite-svelte/A.svelte'
 
   export let forcedState: DashboardForcedState = undefined
 
@@ -59,7 +60,11 @@
     <footer class="flex items-center mt-9">
       <Img src={Logo} imgClass="w-6 h-6 mr-4 opacity-40" />
       <h5 class="text-gray-300 text-lg">
-        Scream For Papers v. {packageJson.version}
+        Scream For Papers v. {packageJson.version} / <A
+          href="https://github.com/mkrl/screamforpapers/issues/new"
+          target="_blank"
+          class="underline text-gray-400">report an issue</A
+        >
       </h5>
     </footer>
   </aside>
