@@ -6,26 +6,18 @@
   import TableHead from 'flowbite-svelte/TableHead.svelte'
   import TableHeadCell from 'flowbite-svelte/TableHeadCell.svelte'
 
-  import {
-    storageLocal,
-    type Talk,
-    type TalkSubmission,
-    type WishlistItem,
-  } from '../storage'
+  import { storageLocal, type Talk, type TalkSubmission } from '../storage'
   import PlaceholderPanel from './ui/PlaceholderPanel.svelte'
   import { onMount } from 'svelte'
   import Heading from 'flowbite-svelte/Heading.svelte'
-  import {
-    getTalkName,
-    replaceShaInUrl,
-    validateSubmissions,
-  } from '../tools/helpers'
+  import { getTalkName, replaceShaInUrl } from '../tools/helpers'
   import RevisionBadge from './ui/RevisionBadge.svelte'
   import A from 'flowbite-svelte/A.svelte'
   import Tooltip from 'flowbite-svelte/Tooltip.svelte'
   import ImportExportShortcut from './ui/ImportExportShortcut.svelte'
   import CloseCircleSolid from 'flowbite-svelte-icons/CloseCircleSolid.svelte'
   import { writable } from 'svelte/store'
+  import EditableField from './ui/EditableField.svelte'
 
   type NormalizedTalkList = {
     [id: string]: Talk
@@ -108,6 +100,16 @@
     sortItems.set([...$sortItems.filter((s) => s.date !== submission.date)])
     storageLocal.set({ submissions: talkSubmissions })
   }
+  const onEditConference = (submission: TalkSubmission, newName: string) => {
+    const submissionIndex = talkSubmissions.findIndex(
+      (s) => s.date === submission.date
+    )
+    talkSubmissions[submissionIndex].name = newName
+    const sortedIndex = $sortItems.findIndex((s) => s.date === submission.date)
+    $sortItems[sortedIndex].name = newName
+    sortItems.set([...$sortItems])
+    storageLocal.set({ submissions: talkSubmissions })
+  }
 </script>
 
 <div class="flex flex-grow mb-4 justify-between">
@@ -126,8 +128,9 @@
           >Paper</TableHeadCell
         >
         <TableHeadCell>Revision</TableHeadCell>
-        <TableHeadCell class="cursor-pointer" on:click={() => sortTable('name')}
-          >Conference</TableHeadCell
+        <TableHeadCell
+          class="cursor-pointer w-1/3"
+          on:click={() => sortTable('name')}>Conference</TableHeadCell
         >
         <TableHeadCell class="cursor-pointer" on:click={() => sortTable('date')}
           >Date submitted</TableHeadCell
@@ -160,9 +163,15 @@
               {/if}
             </TableBodyCell>
             <TableBodyCell>
-              <A href={talkSubmission.url} target="_blank">
-                {talkSubmission.name}
-              </A>
+              <EditableField
+                value={talkSubmission.name}
+                onUpdate={(newName) =>
+                  onEditConference(talkSubmission, newName)}
+              >
+                <A href={talkSubmission.url} target="_blank">
+                  {talkSubmission.name}
+                </A>
+              </EditableField>
             </TableBodyCell>
             <TableBodyCell>
               <span id={'s' + String(new Date(talkSubmission.date).getTime())}>

@@ -17,6 +17,7 @@
   import ImportExportShortcut from './ui/ImportExportShortcut.svelte'
   import { getDueDateColor } from '../tools/helpers'
   import { writable } from 'svelte/store'
+  import EditableField from './ui/EditableField.svelte'
 
   let items: WishlistItem[] = []
 
@@ -112,6 +113,22 @@
       }
     })
   }
+  const onUpdate = (item: WishlistItem, newName: string) => {
+    storageLocal.get().then(({ wishlist }) => {
+      if (wishlist) {
+        const index = wishlist.findIndex((i) => i.url === item.url)
+        if (index !== -1) {
+          wishlist[index].name = newName
+          storageLocal.set({ wishlist })
+
+          const sorted = [...$sortItems]
+          const sortedIndex = sorted.findIndex((i) => i.url === item.url)
+          sorted[sortedIndex].name = newName
+          sortItems.set(sorted)
+        }
+      }
+    })
+  }
 
   const onRemove = (item: WishlistItem) => {
     storageLocal.get().then(({ wishlist }) => {
@@ -148,20 +165,25 @@
           >Name</TableHeadCell
         >
         <TableHeadCell
-          class="cursor-pointer"
+          class="cursor-pointer w-1/6"
           on:click={() => sortTable('dateEnds')}>CFP deadline</TableHeadCell
         >
-        <TableHeadCell>
-          <span class="sr-only">Remove</span>
+        <TableHeadCell class="w-[7%]">
+          <span class="sr-only">Remove or Archive</span>
         </TableHeadCell>
       </TableHead>
       <TableBody>
         {#each upToDateItems as item}
           <TableBodyRow class="group">
             <TableBodyCell>
-              <A href={item.url} target="_blank">
-                {item.name}
-              </A>
+              <EditableField
+                value={item.name}
+                onUpdate={(newName) => onUpdate(item, newName)}
+              >
+                <A href={item.url} target="_blank">
+                  {item.name}
+                </A>
+              </EditableField>
             </TableBodyCell>
             <TableBodyCell>
               <span
@@ -199,9 +221,14 @@
           {#each outdatedItems as item}
             <TableBodyRow class="group">
               <TableBodyCell>
-                <A href={item.url} target="_blank">
-                  {item.name}
-                </A>
+                <EditableField
+                  value={item.name}
+                  onUpdate={(newName) => onUpdate(item, newName)}
+                >
+                  <A href={item.url} target="_blank">
+                    {item.name}
+                  </A>
+                </EditableField>
               </TableBodyCell>
               <TableBodyCell>
                 <span
