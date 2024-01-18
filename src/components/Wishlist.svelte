@@ -240,12 +240,15 @@
                 </span>
               </TableBodyCell>
               <TableHeadCell>
-                <A
-                  class="group-hover:visible invisible cursor-pointer inline-flex mr-4"
-                  title="Unarchive"
-                  on:click={() => onToggle(item)}
-                  ><ArchiveOutline class="cursor-pointer text-amber-500" /></A
-                >
+                <!-- If the color is gray, then it's overdue and can't be unarchived. Too lazy to not use an existing check for it -->
+                {#if getDueDateColor(new Date(), new Date(item.dateEnds)) !== 'text-gray-500'}
+                  <A
+                    class="group-hover:visible invisible cursor-pointer inline-flex mr-4"
+                    title="Unarchive"
+                    on:click={() => onToggle(item)}
+                    ><ArchiveOutline class="cursor-pointer text-amber-500" />
+                  </A>
+                {/if}
                 <A
                   class="group-hover:visible invisible cursor-pointer inline-flex"
                   title="Remove"
