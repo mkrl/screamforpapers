@@ -1,6 +1,5 @@
 <script lang="ts">
   import Select from 'flowbite-svelte/Select.svelte'
-  import Label from 'flowbite-svelte/Label.svelte'
   import type { Talk } from '../../storage.js'
 
   export let options: Talk[] = []

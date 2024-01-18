@@ -12,12 +12,19 @@ export type Talk = {
   [key: string]: string
 } & TalkMeta
 
+export enum SubmissionStatus {
+  PENDING,
+  APPROVED,
+  REJECTED,
+}
+
 export type TalkSubmission = {
   id: string
   date: string
   name: string
   url: string
   sha: string
+  status?: SubmissionStatus
 }
 
 export type WishlistItem = {

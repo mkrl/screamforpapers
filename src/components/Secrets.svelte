@@ -3,7 +3,6 @@
   import Button from 'flowbite-svelte/Button.svelte'
   import Input from 'flowbite-svelte/Input.svelte'
   import Label from 'flowbite-svelte/Label.svelte'
-  import ButtonGroup from 'flowbite-svelte/ButtonGroup.svelte'
   import { onMount } from 'svelte'
 
   let token: string

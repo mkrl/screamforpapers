@@ -6,7 +6,12 @@
   import TableHead from 'flowbite-svelte/TableHead.svelte'
   import TableHeadCell from 'flowbite-svelte/TableHeadCell.svelte'
 
-  import { storageLocal, type Talk, type TalkSubmission } from '../storage'
+  import {
+    storageLocal,
+    SubmissionStatus,
+    type Talk,
+    type TalkSubmission,
+  } from '../storage'
   import PlaceholderPanel from './ui/PlaceholderPanel.svelte'
   import { onMount } from 'svelte'
   import Heading from 'flowbite-svelte/Heading.svelte'
@@ -18,6 +23,7 @@
   import CloseCircleSolid from 'flowbite-svelte-icons/CloseCircleSolid.svelte'
   import { writable } from 'svelte/store'
   import EditableField from './ui/EditableField.svelte'
+  import SubmissionStatusSelect from './ui/SubmissionStatusSelect.svelte'
 
   type NormalizedTalkList = {
     [id: string]: Talk
@@ -110,6 +116,20 @@
     sortItems.set([...$sortItems])
     storageLocal.set({ submissions: talkSubmissions })
   }
+
+  const onUpdateStatus = (
+    submission: TalkSubmission,
+    newStatus: SubmissionStatus
+  ) => {
+    const submissionIndex = talkSubmissions.findIndex(
+      (s) => s.date === submission.date
+    )
+    talkSubmissions[submissionIndex].status = newStatus
+    const sortedIndex = $sortItems.findIndex((s) => s.date === submission.date)
+    $sortItems[sortedIndex].status = newStatus
+    sortItems.set([...$sortItems])
+    storageLocal.set({ submissions: talkSubmissions })
+  }
 </script>
 
 <div class="flex flex-grow mb-4 justify-between">
@@ -126,6 +146,10 @@
       <TableHead class="sticky top-0 z-10">
         <TableHeadCell class="cursor-pointer" on:click={() => sortTable('id')}
           >Paper</TableHeadCell
+        >
+        <TableHeadCell
+          on:click={() => sortTable('status')}
+          class="cursor-pointer w-[10%]">Status</TableHeadCell
         >
         <TableHeadCell>Revision</TableHeadCell>
         <TableHeadCell
@@ -146,6 +170,13 @@
               {normalizedTalks[talkSubmission.id]
                 ? getTalkName(normalizedTalks[talkSubmission.id])
                 : talkSubmission.id}
+            </TableBodyCell>
+            <TableBodyCell>
+              <SubmissionStatusSelect
+                value={talkSubmission.status ?? SubmissionStatus.PENDING}
+                onChange={(newStatus) =>
+                  onUpdateStatus(talkSubmission, newStatus)}
+              />
             </TableBodyCell>
             <TableBodyCell>
               {#if normalizedTalks[talkSubmission.id]}
