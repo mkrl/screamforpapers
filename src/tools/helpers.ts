@@ -88,3 +88,13 @@ export const getDueDateColor = (date: Date, dateEnds: Date) => {
   }
   return 'text-green-500'
 }
+
+export const isEventInElement = (e: MouseEvent, element: Element) => {
+  const rect = element.getBoundingClientRect()
+  const x = e.clientX
+  if (x < rect.left || x >= rect.right) {
+    return false
+  }
+  const y = e.clientY
+  return !(y < rect.top || y >= rect.bottom)
+}
