@@ -57,7 +57,14 @@ const drawTooltip = (
     }
   }
 
+  const onChangeListener = () => {
+    popper.destroy()
+    content.style.display = 'none'
+    target.removeEventListener('keypress', onChangeListener)
+  }
+
   document.body.addEventListener('mouseup', onClickOutsideListener)
+  target.addEventListener('keypress', onChangeListener)
 
   // close tooltip when esc is pressed
   document.addEventListener('keydown', (e) => {

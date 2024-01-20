@@ -98,7 +98,6 @@
 <style>
   .selector {
     all: unset;
-    gap: 0.5rem;
     background-color: white;
     display: flex;
     flex-direction: column;
